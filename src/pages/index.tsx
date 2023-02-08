@@ -3,8 +3,87 @@ import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import HikingIcon from "@mui/icons-material/Hiking";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import HotelIcon from "@mui/icons-material/Hotel";
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
+function createMsgData(
+  index: number,
+  title: string,
+  tag: string,
+  date: string
+) {
+  return { index, title, tag, date };
+}
+
+const tagList = ["달리기", "등산", "외식", "수면"];
+const msgList = [
+  createMsgData(1, "등산을 해보세요!", "등산", "2023-01-31"),
+  createMsgData(2, "달리기를 해보세요!", "달리기", "2023-02-01"),
+  createMsgData(3, "외식을 해보세요!", "외식", "2023-02-02"),
+  createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
+];
 export default function Home() {
+  const [msgTitle, setMsgTitle] = useState("");
+  const [selectTag, setSelectTag] = useState("");
+  const [msg, setMsg] = useState({ title: "", tag: "", date: "" });
+  const [msgLists, setMsgLists] = useState(msgList);
+  const [selectedTagInFilter, setSelectedTagInFilter] = useState<string[]>([]);
+  const [selectedMsgList, setSelectedMsgList] = useState(
+    msgLists.filter((row) => selectedTagInFilter.includes(row.tag))
+  );
+
+  console.log(selectedTagInFilter);
+
+  const onSelectedRadio = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectTag(e.target.value);
+  };
+
+  const onSubmitForm = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = {
+      title: msgTitle,
+      tag: selectTag,
+      date: "2023-02-08",
+    };
+    // setMsg(formData);
+    setMsgLists([
+      ...msgLists,
+      createMsgData(msgLists.length + 1, msgTitle, selectTag, "2023-02-08"),
+    ]);
+    setMsgTitle("");
+    setSelectTag("");
+  };
+
+  const addTags = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (!selectedTagInFilter.includes(value)) {
+      setSelectedTagInFilter([...selectedTagInFilter, value]);
+    } else {
+      const remove = selectedTagInFilter.filter((tag) => tag !== value);
+      setSelectedTagInFilter(remove);
+    }
+  };
+  const removeTags = (e: MouseEvent<HTMLButtonElement>) => {
+    const removeTag = e.currentTarget.textContent?.split(" ")[0];
+    const remove = selectedTagInFilter.filter((tag) => tag !== removeTag);
+    setSelectedTagInFilter(remove);
+    console.log(e.currentTarget.textContent?.split(" ")[0]);
+  };
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    setSelectedMsgList(
+      msgLists.filter((row) => selectedTagInFilter.includes(row.tag))
+    );
+  }, [selectedTagInFilter, msgLists]);
+
   return (
     <>
       <Head>
@@ -13,14 +92,14 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="md:container md:mx-auto">
+      <main className="md:container md:mx-auto pb-8">
         <h1 className="text-3xl font-bold underline text-slate-900 py-4">
-          Dashboard Test!
+          Dashboard
         </h1>
-        <h2 className="border-solid border-0 border-b-2 border-slate-500 py-2">
+        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2">
           모니터링
         </h2>
-        <div className="flex gap-8 pt-4 px-4 mt-2">
+        <div className="flex gap-8 pt-4 px-2 mt-2">
           <div className="basis-1/4 bg-white drop-shadow-lg rounded-lg flex-col">
             <div className="flex p-4">
               <div className="mr-6 w-10 h-10 p-2 rounded-lg bg-yellow-500 text-white flex items-center justify-center drop-shadow-lg">
@@ -86,9 +165,281 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <h2 className="border-solid border-0 border-b-2 border-slate-500 py-2 mt-8">
+        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2 mt-8 mb-4">
           개입( 메세지 보내기 )
         </h2>
+        <div className="p-2 flex gap-8">
+          <form
+            className="p-4 bg-white drop-shadow-lg rounded-lg basis-1/2 h-fit"
+            onSubmit={onSubmitForm}
+          >
+            <div className="text-lg mb-4">메세지 보내기</div>
+            <div className="flex items-center mb-4">
+              <label htmlFor="title" className="mr-2">제목 : </label>
+              <input
+                className="px-1 bg-transparent border-solid border-0 border-b-[1px] text-[1rem] outline-none grow"
+                id="title"
+                type="text"
+                placeholder="제목을 입력해주세요..."
+                value={msgTitle}
+                onChange={(e) => setMsgTitle(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center mb-4">
+              <label className="mr-2">태그 선택 : </label>
+              {tagList.map((tag) => (
+                <div key={tag} className="mr-2">
+                  <label>
+                    <input
+                      type="radio"
+                      value={tag}
+                      checked={tag === selectTag}
+                      onChange={onSelectedRadio}
+                    />
+                    {tag}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end border-solid border-0 border-t-[1px] border-slate-500 pt-4 px-2">
+              <button className="bg-transparent border-0 font-bold cursor-pointer">보내기</button>
+            </div>
+          </form>
+          <div className=" drop-shadow-lg rounded-lg">
+            <div className="bg-white py-2 rounded-tl-lg rounded-tr-lg">
+              <h4 className="pl-2">보낸 메세지 목록</h4>
+            </div>
+            <TableContainer
+              component={Paper}
+              style={{
+                boxShadow: "none",
+                borderRadius: 0,
+                borderBottomLeftRadius: "0.5rem",
+                borderBottomRightRadius: "0.5rem",
+              }}
+            >
+              <Table
+                sx={{ minWidth: 650 }}
+                size="small"
+                aria-label="a dense table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>번호</TableCell>
+                    <TableCell align="left">제목</TableCell>
+                    <TableCell align="right">태그</TableCell>
+                    <TableCell align="right">날짜</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {msgLists.map((msg) => (
+                    <TableRow
+                      key={msg.index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {msg.index}
+                      </TableCell>
+                      <TableCell align="left">{msg.title}</TableCell>
+                      <TableCell align="right">{msg.tag}</TableCell>
+                      <TableCell align="right">{msg.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          {/* <div className="p-4 bg-white drop-shadow-lg rounded-lg basis-1/2">
+            table
+          </div> */}
+        </div>
+        {msg.title !== "" && (
+          <div className="px-4">
+            <h5>메세지 내용</h5>
+            <div>제목 : {msg.title}</div>
+            <div>태그 : {msg.tag}</div>
+          </div>
+        )}
+        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2 mt-8 mb-4">
+          분석(필터링)
+        </h2>
+        <div className="flex gap-8">
+          <div className="basis-1/12 p-2 bg-white drop-shadow-lg rounded-lg ">
+            {/* 날짜 필터 */}
+            <div className="border-solid border-0 border-b-[1px] border-slate-300 py-2">
+              <h4 className="mb-2">날짜</h4>
+              <ul className="list-none">
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("1주일")}
+                      value={"1주일"}
+                    />
+                    1주일
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("1개월")}
+                      value={"1개월"}
+                    />
+                    1개월
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("3개월")}
+                      value={"3개월"}
+                    />
+                    3개월
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("6개월")}
+                      value={"6개월"}
+                    />
+                    6개월
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("1년")}
+                      value={"1년"}
+                    />
+                    1년
+                  </label>
+                </li>
+              </ul>
+            </div>
+            {/* 태그 */}
+            <div className="border-solid border-0 border-b-[1px] border-slate-300 py-2">
+              <h4 className="mb-2">태그</h4>
+              <ul className="list-none">
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("달리기")}
+                      value={"달리기"}
+                    />
+                    달리기
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("등산")}
+                      value={"등산"}
+                    />
+                    등산
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("외식")}
+                      value={"외식"}
+                    />
+                    외식
+                  </label>
+                </li>
+                <li className="pl-2 py-1/2">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 opacity-50"
+                      onChange={addTags}
+                      checked={selectedTagInFilter.includes("수면")}
+                      value={"수면"}
+                    />
+                    수면
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="grow  bg-white drop-shadow-lg rounded-lg h-fit">
+            <div className="p-2 border-solid border-0 border-b-[1px] border-slate-300 ">
+              <span className="opacity-70">
+                tags:{" "}
+                {selectedTagInFilter.map((tag: string) => (
+                  <button
+                    key={tag}
+                    className="mr-2 px-2 py-1 rounded-2xl border-solid border-[1px] border-slate-400 text-[12px] cursor-pointer hover:bg-slate-500 hover:text-white"
+                    onClick={removeTags}
+                  >
+                    {tag} X
+                  </button>
+                ))}{" "}
+              </span>
+            </div>
+            <TableContainer component={Paper} style={{ boxShadow: "none" }}>
+              <Table
+                sx={{ minWidth: 650 }}
+                size="small"
+                aria-label="a dense table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>번호</TableCell>
+                    <TableCell align="left">제목</TableCell>
+                    <TableCell align="right">태그</TableCell>
+                    <TableCell align="right">날짜</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {selectedMsgList.length !== 0 &&
+                    selectedMsgList.map((msg, index) => (
+                      <TableRow
+                        key={msg.index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align="left">{msg.title}</TableCell>
+                        <TableCell align="right">{msg.tag}</TableCell>
+                        <TableCell align="right">{msg.date}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+              {selectedMsgList.length === 0 && (
+                <div className="p-2 text-center">no-data</div>
+              )}
+            </TableContainer>
+          </div>
+        </div>
       </main>
     </>
   );
