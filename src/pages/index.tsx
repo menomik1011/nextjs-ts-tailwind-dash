@@ -11,6 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Monitoring from "@/components/main/monitoring";
 
 function createMsgData(
   index: number,
@@ -92,79 +93,14 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="md:container md:mx-auto pb-8">
+      <main className="container mx-auto px-4 pb-8">
         <h1 className="text-3xl font-bold underline text-slate-900 py-4">
           Dashboard
         </h1>
         <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2">
           모니터링
         </h2>
-        <div className="flex gap-8 pt-4 px-2 mt-2">
-          <div className="basis-1/4 bg-white drop-shadow-lg rounded-lg flex-col">
-            <div className="flex p-4">
-              <div className="mr-6 w-10 h-10 p-2 rounded-lg bg-yellow-500 text-white flex items-center justify-center drop-shadow-lg">
-                <DirectionsRunIcon fontSize="large" />
-              </div>
-              <div className="flex-col items-start">
-                <h5 className="text-gray-500">달리기</h5>
-                <h2 className="text-3xl">20</h2>
-              </div>
-            </div>
-            <div className="p-2 border-solid border-0 border-t-[1px] border-slate-300 text-right text-sm text-gray-400 ">
-              <span className="hover:text-gray-600 cursor-pointer">
-                상세보기➡
-              </span>
-            </div>
-          </div>
-          <div className="basis-1/4 bg-white drop-shadow-lg rounded-lg flex-col">
-            <div className="flex p-4">
-              <div className="mr-6 w-10 h-10 p-2 rounded-lg bg-green-500 text-white flex items-center justify-center drop-shadow-lg">
-                <HikingIcon fontSize="large" />
-              </div>
-              <div className="flex-col items-start">
-                <h5 className="text-gray-500">등산</h5>
-                <h2 className="text-3xl">20</h2>
-              </div>
-            </div>
-            <div className="p-2 border-solid border-0 border-t-[1px] border-slate-300 text-right text-sm text-gray-400 ">
-              <span className="hover:text-gray-600 cursor-pointer">
-                상세보기➡
-              </span>
-            </div>
-          </div>
-          <div className="basis-1/4 bg-white drop-shadow-lg rounded-lg flex-col">
-            <div className="flex p-4">
-              <div className="mr-6 w-10 h-10 p-2 rounded-lg bg-blue-500 text-white flex items-center justify-center drop-shadow-lg">
-                <LocalDiningIcon fontSize="large" />
-              </div>
-              <div className="flex-col items-start">
-                <h5 className="text-gray-500">외식</h5>
-                <h2 className="text-3xl">20</h2>
-              </div>
-            </div>
-            <div className="p-2 border-solid border-0 border-t-[1px] border-slate-300 text-right text-sm text-gray-400 ">
-              <span className="hover:text-gray-600 cursor-pointer">
-                상세보기➡
-              </span>
-            </div>
-          </div>
-          <div className="basis-1/4 bg-white drop-shadow-lg rounded-lg flex-col">
-            <div className="flex p-4">
-              <div className="mr-6 w-10 h-10 p-2 rounded-lg bg-red-500 text-white flex items-center justify-center drop-shadow-lg">
-                <HotelIcon fontSize="large" />
-              </div>
-              <div className="flex-col items-start">
-                <h5 className="text-gray-500">수면</h5>
-                <h2 className="text-3xl">20</h2>
-              </div>
-            </div>
-            <div className="p-2 border-solid border-0 border-t-[1px] border-slate-300 text-right text-sm text-gray-400 ">
-              <span className="hover:text-gray-600 cursor-pointer">
-                상세보기➡
-              </span>
-            </div>
-          </div>
-        </div>
+        <Monitoring />
         <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2 mt-8 mb-4">
           개입( 메세지 보내기 )
         </h2>
