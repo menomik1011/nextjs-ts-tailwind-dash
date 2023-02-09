@@ -1,8 +1,4 @@
 import Head from "next/head";
-import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
-import HikingIcon from "@mui/icons-material/Hiking";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
-import HotelIcon from "@mui/icons-material/Hotel";
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Monitoring from "@/components/main/monitoring";
+import Monitoring from "@/components/main/Monitoring";
 
 function createMsgData(
   index: number,
@@ -38,8 +34,6 @@ export default function Home() {
   const [selectedMsgList, setSelectedMsgList] = useState(
     msgLists.filter((row) => selectedTagInFilter.includes(row.tag))
   );
-
-  console.log(selectedTagInFilter);
 
   const onSelectedRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectTag(e.target.value);
@@ -74,10 +68,7 @@ export default function Home() {
     const removeTag = e.currentTarget.textContent?.split(" ")[0];
     const remove = selectedTagInFilter.filter((tag) => tag !== removeTag);
     setSelectedTagInFilter(remove);
-    console.log(e.currentTarget.textContent?.split(" ")[0]);
   };
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     setSelectedMsgList(
@@ -93,25 +84,27 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="container mx-auto px-4 pb-8">
-        <h1 className="text-3xl font-bold underline text-slate-900 py-4">
+      <main className="container mx-auto px-4 py-8">
+        {/* <h1 className="text-3xl font-bold underline text-slate-900 py-4">
           Dashboard
-        </h1>
-        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2">
+        </h1> */}
+        <h2 className="p-2 border-solid border-0 border-b-2 border-amber-300 bg-yellow-100 text-xl text-slate-600">
           모니터링
         </h2>
         <Monitoring />
-        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2 mt-8 mb-4">
+        <h2 className="p-2 border-solid border-0 border-b-2 border-red-300 bg-red-100 text-xl text-slate-600">
           개입( 메세지 보내기 )
         </h2>
-        <div className="p-2 flex gap-8">
+        <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
           <form
-            className="p-4 bg-white drop-shadow-lg rounded-lg basis-1/2 h-fit"
+            className="px-6 mr-8 flex-col grow bg-white border-solid border-0 border-r-[1px] border-slate-300"
             onSubmit={onSubmitForm}
           >
-            <div className="text-lg mb-4">메세지 보내기</div>
+            <h4 className="py-2 text-md mb-4 text-slate-600">메세지 보내기</h4>
             <div className="flex items-center mb-4">
-              <label htmlFor="title" className="mr-2">제목 : </label>
+              <label htmlFor="title" className="mr-2">
+                제목 :{" "}
+              </label>
               <input
                 className="px-1 bg-transparent border-solid border-0 border-b-[1px] text-[1rem] outline-none grow"
                 id="title"
@@ -138,13 +131,13 @@ export default function Home() {
               ))}
             </div>
             <div className="flex justify-end border-solid border-0 border-t-[1px] border-slate-500 pt-4 px-2">
-              <button className="bg-transparent border-0 font-bold cursor-pointer">보내기</button>
+              <button className="bg-transparent border-0 font-bold cursor-pointer">
+                보내기
+              </button>
             </div>
           </form>
-          <div className=" drop-shadow-lg rounded-lg">
-            <div className="bg-white py-2 rounded-tl-lg rounded-tr-lg">
-              <h4 className="pl-2">보낸 메세지 목록</h4>
-            </div>
+          <div className="border-solid border-0 border-l-[1px] border-slate-300">
+            <h4 className="pl-2 py-2 text-slate-600">보낸 메세지 목록</h4>
             <TableContainer
               component={Paper}
               style={{
@@ -196,11 +189,11 @@ export default function Home() {
             <div>태그 : {msg.tag}</div>
           </div>
         )}
-        <h2 className="border-solid border-0 border-b-[1px] border-slate-500 py-2 mt-8 mb-4">
+        <h2 className="p-2 border-solid border-0 border-b-2 border-slate-600 py-2 text-xl text-slate-600 bg-slate-300">
           분석(필터링)
         </h2>
-        <div className="flex gap-8">
-          <div className="basis-1/12 p-2 bg-white drop-shadow-lg rounded-lg ">
+        <div className="flex border-solid border-0 border-x-[1px] border-b-[1px] border-slate-300 py-2">
+          <div className="basis-1/12 p-2 bg-white mr-8 border-solid border-0 border-r-[1px] border-slate-300">
             {/* 날짜 필터 */}
             <div className="border-solid border-0 border-b-[1px] border-slate-300 py-2">
               <h4 className="mb-2">날짜</h4>
@@ -322,7 +315,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="grow  bg-white drop-shadow-lg rounded-lg h-fit">
+          <div className="grow bg-white border-solid border-0 border-l-[1px] border-slate-300">
             <div className="p-2 border-solid border-0 border-b-[1px] border-slate-300 ">
               <span className="opacity-70">
                 tags:{" "}

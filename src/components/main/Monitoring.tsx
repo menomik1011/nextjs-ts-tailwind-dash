@@ -32,11 +32,11 @@ const monitoringList = [
 
 export default function Monitoring() {
   return (
-    <div className="px-2 py-4 flex flex-wrap">
+    <div className="px-2 py-6 flex flex-wrap border-solid border-0 border-x-[1px] border-slate-300">
       {monitoringList.map((item) => (
         <div
           key={item.title}
-          className="mx-4 flex-col grow bg-white drop-shadow-lg rounded-lg"
+          className="mx-4 flex-col grow bg-white drop-shadow-lg"
         >
           <div className="flex p-4">
             <div
@@ -46,7 +46,7 @@ export default function Monitoring() {
             </div>
             <div className="flex-col items-start">
               <h5 className="text-gray-500">{item.title}</h5>
-              <h2 className="text-3xl">{item.score}</h2>
+              <h2 className="text-3xl text-slate-600">{item.score}</h2>
             </div>
           </div>
           <div className="p-2 border-solid border-0 border-t-[1px] border-slate-300 text-right text-sm text-gray-400 ">
