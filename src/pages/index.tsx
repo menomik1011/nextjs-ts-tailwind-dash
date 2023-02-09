@@ -196,7 +196,7 @@ export default function Home() {
           <div className="basis-1/12 p-2 bg-white mr-8 border-solid border-0 border-r-[1px] border-slate-300">
             {/* 날짜 필터 */}
             <div className="border-solid border-0 border-b-[1px] border-slate-300 py-2">
-              <h4 className="mb-2">날짜</h4>
+              <h4 className="mb-2 text-sm text-slate-600">날짜</h4>
               <ul className="list-none">
                 <li className="pl-2 py-1/2">
                   <label className="text-sm">
@@ -262,7 +262,7 @@ export default function Home() {
             </div>
             {/* 태그 */}
             <div className="border-solid border-0 border-b-[1px] border-slate-300 py-2">
-              <h4 className="mb-2">태그</h4>
+              <h4 className="mb-2 text-sm text-slate-600">태그</h4>
               <ul className="list-none">
                 <li className="pl-2 py-1/2">
                   <label className="text-sm">
@@ -317,18 +317,16 @@ export default function Home() {
           </div>
           <div className="grow bg-white border-solid border-0 border-l-[1px] border-slate-300">
             <div className="p-2 border-solid border-0 border-b-[1px] border-slate-300 ">
-              <span className="opacity-70">
-                tags:{" "}
-                {selectedTagInFilter.map((tag: string) => (
-                  <button
-                    key={tag}
-                    className="mr-2 px-2 py-1 rounded-2xl border-solid border-[1px] border-slate-400 text-[12px] cursor-pointer hover:bg-slate-500 hover:text-white"
-                    onClick={removeTags}
-                  >
-                    {tag} X
-                  </button>
-                ))}{" "}
-              </span>
+              <span className="mr-2 text-sm text-slate-600 font-bold">태그 : </span>
+              {selectedTagInFilter.map((tag: string) => (
+                <button
+                  key={tag}
+                  className="mr-2 px-2 py-1 rounded-2xl border-solid border-[1px] border-slate-400 text-[12px] cursor-pointer hover:bg-slate-500 hover:text-white"
+                  onClick={removeTags}
+                >
+                  {tag} X
+                </button>
+              ))}
             </div>
             <TableContainer component={Paper} style={{ boxShadow: "none" }}>
               <Table
