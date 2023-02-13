@@ -126,13 +126,13 @@ export default function Home() {
         ) : (
           <div className="p-2 flex justify-end gap-2 decoration-">
             <Link
-              className="underline cursor-pointer hover:text-indigo-500 visited:text-black"
+              className="underline cursor-pointer text-black hover:text-indigo-500"
               href="/login"
             >
               로그인
             </Link>
             <Link
-              className="underline cursor-pointer hover:text-indigo-500 visited:text-black"
+              className="underline cursor-pointer text-black hover:text-indigo-500"
               href="/join"
             >
               회원가입
