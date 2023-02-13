@@ -8,6 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Monitoring from "@/components/main/Monitoring";
+import Link from "next/link";
+import { auth } from "firebaseConfig";
+import { useRouter } from "next/router";
 
 function createMsgData(
   index: number,
@@ -26,6 +29,7 @@ const msgList = [
   createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
 ];
 export default function Home() {
+  const router = useRouter();
   const [msgTitle, setMsgTitle] = useState("");
   const [selectTag, setSelectTag] = useState("");
   const [msg, setMsg] = useState({ title: "", tag: "", date: "" });
@@ -34,6 +38,8 @@ export default function Home() {
   const [selectedMsgList, setSelectedMsgList] = useState(
     msgLists.filter((row) => selectedTagInFilter.includes(row.tag))
   );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState<string | undefined>("");
 
   const onSelectedRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectTag(e.target.value);
@@ -70,11 +76,33 @@ export default function Home() {
     setSelectedTagInFilter(remove);
   };
 
+  const signOut = () => {
+    auth
+      .signOut()
+      .then(() => router.push("/"))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     setSelectedMsgList(
       msgLists.filter((row) => selectedTagInFilter.includes(row.tag))
     );
   }, [selectedTagInFilter, msgLists]);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLoggedIn(true);
+        setUserName(user.email?.split("@")[0]);
+        console.log(user.email?.split("@")[0]);
+      } else {
+        setIsLoggedIn(false);
+        console.log(user);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -88,6 +116,30 @@ export default function Home() {
         {/* <h1 className="text-3xl font-bold underline text-slate-900 py-4">
           Dashboard
         </h1> */}
+        {isLoggedIn ? (
+          <div className="p-2 flex justify-end">
+            {userName}님이 로그인됨 |{" "}
+            <button className="ml-2 bg-transparent border-0 text-base cursor-pointer hover:text-indigo-500" onClick={signOut}>
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <div className="p-2 flex justify-end gap-2 decoration-">
+            <Link
+              className="underline cursor-pointer hover:text-indigo-500 visited:text-black"
+              href="/login"
+            >
+              로그인
+            </Link>
+            <Link
+              className="underline cursor-pointer hover:text-indigo-500 visited:text-black"
+              href="/join"
+            >
+              회원가입
+            </Link>
+          </div>
+        )}
+
         <h2 className="p-2 border-solid border-0 border-b-2 border-amber-300 bg-yellow-100 text-xl text-slate-600">
           모니터링
         </h2>
@@ -317,7 +369,9 @@ export default function Home() {
           </div>
           <div className="grow bg-white border-solid border-0 border-l-[1px] border-slate-300">
             <div className="p-2 border-solid border-0 border-b-[1px] border-slate-300 ">
-              <span className="mr-2 text-sm text-slate-600 font-bold">태그 : </span>
+              <span className="mr-2 text-sm text-slate-600 font-bold">
+                태그 :{" "}
+              </span>
               {selectedTagInFilter.map((tag: string) => (
                 <button
                   key={tag}
