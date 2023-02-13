@@ -9,8 +9,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Monitoring from "@/components/main/Monitoring";
 import Link from "next/link";
-import { auth } from "firebaseConfig";
+import { auth, database } from "firebaseConfig";
 import { useRouter } from "next/router";
+import { child, get, onValue, ref, set } from "firebase/database";
+import { v4 as uuidv4 } from "uuid";
 
 function createMsgData(
   index: number,
@@ -57,6 +59,14 @@ export default function Home() {
       ...msgLists,
       createMsgData(msgLists.length + 1, msgTitle, selectTag, "2023-02-08"),
     ]);
+
+    // firebase database 쓰기
+    set(ref(database, "dashboard/" + "test/" + uuidv4()), {
+      title: msgTitle,
+      tag: selectTag,
+      date: "2023-02-13",
+    });
+
     setMsgTitle("");
     setSelectTag("");
   };
@@ -119,7 +129,10 @@ export default function Home() {
         {isLoggedIn ? (
           <div className="p-2 flex justify-end">
             {userName}님이 로그인됨 |{" "}
-            <button className="ml-2 bg-transparent border-0 text-base cursor-pointer hover:text-indigo-500" onClick={signOut}>
+            <button
+              className="ml-2 bg-transparent border-0 text-base cursor-pointer hover:text-indigo-500"
+              onClick={signOut}
+            >
               로그아웃
             </button>
           </div>
@@ -425,3 +438,21 @@ export default function Home() {
     </>
   );
 }
+
+// https://chaeyoung2.tistory.com/53 ssr참고하고
+// export async function getServerSideProps() {
+//   const dashRef = ref(database);
+//   const datas = get(child(dashRef, 'dashboard/test'))
+//   .then(snapshot=>{
+//     if (snapshot.exists()) {
+//       console.log(JSON.stringify(snapshot.val()) );
+
+//       return JSON.stringify(snapshot.val());
+//     } else {
+//       console.log("No data available");
+//     }
+
+//   })
+
+//   return { props: { datas } };
+// }
