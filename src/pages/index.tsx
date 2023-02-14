@@ -13,6 +13,8 @@ import { auth, database } from "firebaseConfig";
 import { useRouter } from "next/router";
 import { child, get, onValue, ref, set } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
+import MessegeSection from "@/components/main/MessegeSection";
+import axios from "axios";
 
 function createMsgData(
   index: number,
@@ -30,7 +32,13 @@ const msgList = [
   createMsgData(3, "외식을 해보세요!", "외식", "2023-02-02"),
   createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
 ];
-export default function Home() {
+// Todo any 타입 바꾸기
+interface propsType {
+  data: any;
+}
+export default function Home({data}:propsType) {
+  console.log("data",data);
+  
   const router = useRouter();
   const [msgTitle, setMsgTitle] = useState("");
   const [selectTag, setSelectTag] = useState("");
@@ -123,9 +131,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container mx-auto px-4 py-8">
-        {/* <h1 className="text-3xl font-bold underline text-slate-900 py-4">
-          Dashboard
-        </h1> */}
         {isLoggedIn ? (
           <div className="p-2 flex justify-end">
             {userName}님이 로그인됨 |{" "}
@@ -160,7 +165,8 @@ export default function Home() {
         <h2 className="p-2 border-solid border-0 border-b-2 border-red-300 bg-red-100 text-xl text-slate-600">
           개입( 메세지 보내기 )
         </h2>
-        <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
+        <MessegeSection userName={userName}/>
+        {/* <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
           <form
             className="px-6 mr-8 flex-col grow bg-white border-solid border-0 border-r-[1px] border-slate-300"
             onSubmit={onSubmitForm}
@@ -243,17 +249,7 @@ export default function Home() {
               </Table>
             </TableContainer>
           </div>
-          {/* <div className="p-4 bg-white drop-shadow-lg rounded-lg basis-1/2">
-            table
-          </div> */}
-        </div>
-        {msg.title !== "" && (
-          <div className="px-4">
-            <h5>메세지 내용</h5>
-            <div>제목 : {msg.title}</div>
-            <div>태그 : {msg.tag}</div>
-          </div>
-        )}
+        </div> */}
         <h2 className="p-2 border-solid border-0 border-b-2 border-slate-600 py-2 text-xl text-slate-600 bg-slate-300">
           분석(필터링)
         </h2>
@@ -440,19 +436,10 @@ export default function Home() {
 }
 
 // https://chaeyoung2.tistory.com/53 ssr참고하고
-// export async function getServerSideProps() {
-//   const dashRef = ref(database);
-//   const datas = get(child(dashRef, 'dashboard/test'))
-//   .then(snapshot=>{
-//     if (snapshot.exists()) {
-//       console.log(JSON.stringify(snapshot.val()) );
+export async function getServerSideProps() {
+  // const apiUrl = process.env.API_BASE_URL;
+  const res = await axios.get(`http://localhost:3000/api/messege/test`);
+  const data = res.data;
 
-//       return JSON.stringify(snapshot.val());
-//     } else {
-//       console.log("No data available");
-//     }
-
-//   })
-
-//   return { props: { datas } };
-// }
+  return { props: { data } };
+}
