@@ -27,6 +27,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@iconify/react": "^4.1.0",
     "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",

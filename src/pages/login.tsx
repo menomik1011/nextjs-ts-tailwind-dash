@@ -1,3 +1,4 @@
+import SocialButtonGroup from "@/components/auth/SocialButtonGroup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "firebaseConfig";
 import Link from "next/link";
@@ -66,6 +67,7 @@ export default function Login() {
               로그인
             </button>
           </form>
+          <SocialButtonGroup />
           <small>
             아직 아이디가 없나요
             <Link href="/join" className="ml-1 text-blue-500 uppercase">
