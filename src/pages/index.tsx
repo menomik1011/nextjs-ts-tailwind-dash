@@ -15,6 +15,7 @@ import { child, get, onValue, ref, set } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import MessegeSection from "@/components/main/MessegeSection";
 import axios from "axios";
+import { IdMessegeData } from "@/types";
 
 function createMsgData(
   index: number,
@@ -34,11 +35,9 @@ const msgList = [
 ];
 // Todo any 타입 바꾸기
 interface propsType {
-  data: any;
+  data: IdMessegeData[];
 }
 export default function Home({data}:propsType) {
-  console.log("data",data);
-  
   const router = useRouter();
   const [msgTitle, setMsgTitle] = useState("");
   const [selectTag, setSelectTag] = useState("");
@@ -97,7 +96,10 @@ export default function Home({data}:propsType) {
   const signOut = () => {
     auth
       .signOut()
-      .then(() => router.push("/"))
+      .then(() => {
+        setUserName("");
+        router.push("/");
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -165,7 +167,7 @@ export default function Home({data}:propsType) {
         <h2 className="p-2 border-solid border-0 border-b-2 border-red-300 bg-red-100 text-xl text-slate-600">
           개입( 메세지 보내기 )
         </h2>
-        <MessegeSection userName={userName}/>
+        <MessegeSection userName={userName} data={data} />
         {/* <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
           <form
             className="px-6 mr-8 flex-col grow bg-white border-solid border-0 border-r-[1px] border-slate-300"

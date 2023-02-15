@@ -1,4 +1,4 @@
-import { FormEvent, ChangeEvent, useState } from "react";
+import { FormEvent, ChangeEvent, useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,50 +6,45 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { ref, set } from "firebase/database";
+import { onValue, ref, set } from "firebase/database";
 import { database } from "firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
+import { IdMessegeData } from "@/types";
 
-function createMsgData(
-  index: number,
-  title: string,
-  tag: string,
-  date: string
-) {
-  return { index, title, tag, date };
-}
+// function createMsgData(
+//   index: number,
+//   title: string,
+//   tag: string,
+//   date: string
+// ) {
+//   return { index, title, tag, date };
+// }
 
 const tagList = ["달리기", "등산", "외식", "수면"];
-const msgList = [
-  createMsgData(1, "등산을 해보세요!", "등산", "2023-01-31"),
-  createMsgData(2, "달리기를 해보세요!", "달리기", "2023-02-01"),
-  createMsgData(3, "외식을 해보세요!", "외식", "2023-02-02"),
-  createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
-];
-
-interface MessegeData {
-    id: string;
-    date: string;
-    tag: string;
-    title: string;
-}
+// const msgList = [
+//   createMsgData(1, "등산을 해보세요!", "등산", "2023-01-31"),
+//   createMsgData(2, "달리기를 해보세요!", "달리기", "2023-02-01"),
+//   createMsgData(3, "외식을 해보세요!", "외식", "2023-02-02"),
+//   createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
+// ];
 
 interface propTypes{
     userName?: string;
+    data:IdMessegeData[];
 }
 
-export default function MessegeSection({userName}:propTypes) {
+export default function MessegeSection({userName, data}:propTypes) {
   const [msgTitle, setMsgTitle] = useState("");
   const [selectTag, setSelectTag] = useState("");
-  const [msgLists, setMsgLists] = useState(msgList);
+  const [msgLists, setMsgLists] = useState(data);
 
   const onSubmitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // setMsg(formData);
-    setMsgLists([
-      ...msgLists,
-      createMsgData(msgLists.length + 1, msgTitle, selectTag, "2023-02-08"),
-    ]);
+    // setMsgLists([
+    //   ...msgLists,
+    //   // createMsgData(msgLists.length + 1, msgTitle, selectTag, "2023-02-08"),
+    // ]);
 
     // firebase database 쓰기
     set(ref(database, `messege/${userName}/` + uuidv4()), {
@@ -64,6 +59,7 @@ export default function MessegeSection({userName}:propTypes) {
   const onSelectedRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectTag(e.target.value);
   };
+  
   return (
     <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
       <form
@@ -127,13 +123,13 @@ export default function MessegeSection({userName}:propTypes) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {msgLists.map((msg) => (
+              {msgLists&&msgLists.map((msg, index) => (
                 <TableRow
-                  key={msg.index}
+                  key={msg.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {msg.index}
+                    {index + 1}
                   </TableCell>
                   <TableCell align="left">{msg.title}</TableCell>
                   <TableCell align="right">{msg.tag}</TableCell>
