@@ -6,10 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { onValue, ref, set } from "firebase/database";
+import { child, get, onValue, ref, set } from "firebase/database";
 import { database } from "firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import { IdMessegeData } from "@/types";
+import axios from "axios";
 
 // function createMsgData(
 //   index: number,
@@ -28,17 +29,17 @@ const tagList = ["달리기", "등산", "외식", "수면"];
 //   createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
 // ];
 
-interface propTypes{
-    userName?: string;
-    data:IdMessegeData[];
+interface propTypes {
+  userName?: string;
+  data: IdMessegeData[];
 }
 
-export default function MessegeSection({userName, data}:propTypes) {
+export default function MessegeSection({ userName, data }: propTypes) {
   const [msgTitle, setMsgTitle] = useState("");
   const [selectTag, setSelectTag] = useState("");
   const [msgLists, setMsgLists] = useState(data);
 
-  const onSubmitForm = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // setMsg(formData);
     // setMsgLists([
@@ -47,10 +48,36 @@ export default function MessegeSection({userName, data}:propTypes) {
     // ]);
 
     // firebase database 쓰기
-    set(ref(database, `messege/${userName}/` + uuidv4()), {
+    // set(ref(database, `messege/${userName}/` + uuidv4()), {
+    //   title: msgTitle,
+    //   tag: selectTag,
+    //   date: "2023-02-14",
+    // });
+    // await get(child(ref(database),`messege/${userName}/`))
+    // .then(snapshot=>{
+    //     if(snapshot.exists()){
+    //       const data: IdMessegeData[] = [];
+    //         // console.log(snapshot.val());
+    //         snapshot.forEach(childSnapshot=>{
+    //             const childKey = childSnapshot.key;
+    //             const childData = childSnapshot.val();
+    //             childData.id = childKey;
+    //             data.push(childData);
+    //         });
+
+    //     }else{
+    //         console.error("No data available");
+    //     }
+    // })
+
+    axios.post(`http://localhost:3000/api/messege/${userName}/`, {
       title: msgTitle,
       tag: selectTag,
       date: "2023-02-14",
+    }).then(res=>{
+      console.log(res.data);
+      
+      setMsgLists(res.data)
     });
 
     setMsgTitle("");
@@ -59,7 +86,7 @@ export default function MessegeSection({userName, data}:propTypes) {
   const onSelectedRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectTag(e.target.value);
   };
-  
+
   return (
     <div className="py-2 px-2 flex border-solid border-0 border-x-[1px] border-slate-300">
       <form
@@ -123,19 +150,20 @@ export default function MessegeSection({userName, data}:propTypes) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {msgLists&&msgLists.map((msg, index) => (
-                <TableRow
-                  key={msg.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell align="left">{msg.title}</TableCell>
-                  <TableCell align="right">{msg.tag}</TableCell>
-                  <TableCell align="right">{msg.date}</TableCell>
-                </TableRow>
-              ))}
+              {msgLists &&
+                msgLists.map((msg, index) => (
+                  <TableRow
+                    key={msg.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell align="left">{msg.title}</TableCell>
+                    <TableCell align="right">{msg.tag}</TableCell>
+                    <TableCell align="right">{msg.date}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
