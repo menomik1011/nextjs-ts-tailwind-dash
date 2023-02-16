@@ -6,28 +6,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { child, get, onValue, ref, set } from "firebase/database";
-import { database } from "firebaseConfig";
-import { v4 as uuidv4 } from "uuid";
 import { IdMessegeData } from "@/types";
 import axios from "axios";
 
-// function createMsgData(
-//   index: number,
-//   title: string,
-//   tag: string,
-//   date: string
-// ) {
-//   return { index, title, tag, date };
-// }
-
 const tagList = ["달리기", "등산", "외식", "수면"];
-// const msgList = [
-//   createMsgData(1, "등산을 해보세요!", "등산", "2023-01-31"),
-//   createMsgData(2, "달리기를 해보세요!", "달리기", "2023-02-01"),
-//   createMsgData(3, "외식을 해보세요!", "외식", "2023-02-02"),
-//   createMsgData(4, "수면을 해보세요!", "수면", "2023-02-03"),
-// ];
 
 interface propTypes {
   userName?: string;
@@ -41,44 +23,15 @@ export default function MessegeSection({ userName, data }: propTypes) {
 
   const onSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setMsg(formData);
-    // setMsgLists([
-    //   ...msgLists,
-    //   // createMsgData(msgLists.length + 1, msgTitle, selectTag, "2023-02-08"),
-    // ]);
-
-    // firebase database 쓰기
-    // set(ref(database, `messege/${userName}/` + uuidv4()), {
-    //   title: msgTitle,
-    //   tag: selectTag,
-    //   date: "2023-02-14",
-    // });
-    // await get(child(ref(database),`messege/${userName}/`))
-    // .then(snapshot=>{
-    //     if(snapshot.exists()){
-    //       const data: IdMessegeData[] = [];
-    //         // console.log(snapshot.val());
-    //         snapshot.forEach(childSnapshot=>{
-    //             const childKey = childSnapshot.key;
-    //             const childData = childSnapshot.val();
-    //             childData.id = childKey;
-    //             data.push(childData);
-    //         });
-
-    //     }else{
-    //         console.error("No data available");
-    //     }
-    // })
-
-    axios.post(`http://localhost:3000/api/messege/${userName}/`, {
-      title: msgTitle,
-      tag: selectTag,
-      date: "2023-02-14",
-    }).then(res=>{
-      console.log(res.data);
-      
-      setMsgLists(res.data)
-    });
+    axios
+      .post(`http://localhost:3000/api/messege/${userName}/`, {
+        title: msgTitle,
+        tag: selectTag,
+        date: "2023-02-14",
+      })
+      .then((res) => {
+        setMsgLists(res.data);
+      });
 
     setMsgTitle("");
     setSelectTag("");
